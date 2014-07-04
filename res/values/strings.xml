@@ -8,5 +8,6 @@
     <string name="title_activity_view_image">ViewImage</string>
     <string name="title_activity_big_view">BigView</string>
     <string name="title_activity_login">Login</string>
+    <string name="title_activity_friends_snap">FriendsSnapActivity</string>
 
 </resources>

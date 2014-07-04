@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,16 +36,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.habosa.javasnap.Friend;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
 
 public class HomeActivity extends Activity implements OnScrollListener {
+	MyAdapter adapter;
 	GridView gridView;
 	Uri currImageURI;
 	String realPath, un, pw;
 	boolean sentOrNah;
 	ProgressDialog progressDialog;
-	MyAdapter adapter;
 	int checkEverySnapIndex;
 	Boolean finishedLoading;
 
@@ -147,7 +149,7 @@ public class HomeActivity extends Activity implements OnScrollListener {
 		}
 
 		@Override
-		public int getCount() {
+		public int getCount() {			
 			return SnapData.byteList.size();
 		}
 
@@ -224,14 +226,39 @@ public class HomeActivity extends Activity implements OnScrollListener {
 				if (loginObj != null) {
 					SnapData.authTokenSaved = loginObj
 							.getString(Snapchat.AUTH_TOKEN_KEY);
+					
+					
+					SnapData.myFriends=new ArrayList<Friend>();
+					SnapData.myFriendsNames=new ArrayList<String>();
 					// get friends list
-					SnapData.myFriends = Snapchat.getFriends(loginObj);
+					Friend[] possibleFriends = Snapchat.getFriends(loginObj);
+					List<Friend> checkForFriendName=new ArrayList<Friend>();
+					for(Friend fr:possibleFriends){								
+						checkForFriendName.add(fr);
+						SnapData.myFriends.add(fr);
+					}
+					
+					
+					
+					
+					
+					//SnapData.myFriends= new ArrayList<Friend>();
 					// get storys
 					Story[] notdownloadable = Snapchat.getStories(un,
 							SnapData.authTokenSaved);
+					
 					SnapData.myStorys = new ArrayList<Story>();
+					
 					for(Story s:Story
 							.filterDownloadable(notdownloadable)){
+						
+						//add to friends if not on there
+						if(!SnapData.myFriendsNames.contains(s.getSender())){
+							SnapData.myFriendsNames.add(s.getSender());
+						}
+						
+						
+						//add to my storys
 						if(s.isImage())
 							SnapData.myStorys.add(s);
 
@@ -241,6 +268,9 @@ public class HomeActivity extends Activity implements OnScrollListener {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+				Toast.makeText(getApplicationContext(), "incorrect pw",
+						Toast.LENGTH_LONG).show();
+				finish();
 			}
 			return null;
 		}

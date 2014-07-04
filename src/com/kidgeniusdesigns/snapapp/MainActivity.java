@@ -18,7 +18,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	EditText username, password;
-	
+	static String usernameForLater;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,11 +33,12 @@ public class MainActivity extends Activity {
 			}
 	
 	public void logIn(View v){
-		saveToFile(username.getText().toString(),password.getText().toString());
+		usernameForLater=username.getText().toString();
+		saveToFile(usernameForLater,password.getText().toString());
 		
 		
 		Intent i= new Intent(this, HomeActivity.class);
-		i.putExtra("username", username.getText().toString());
+		i.putExtra("username", usernameForLater);
 		i.putExtra("password", password.getText().toString());
 		startActivity(i);
 	}
