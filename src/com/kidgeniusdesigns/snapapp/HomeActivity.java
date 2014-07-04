@@ -1,9 +1,11 @@
 package com.kidgeniusdesigns.snapapp;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,45 +42,43 @@ import com.habosa.javasnap.Friend;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
 
-public class HomeActivity extends Activity implements OnScrollListener {
-	MyAdapter adapter;
-	GridView gridView;
+public class HomeActivity extends Activity {
+	
 	Uri currImageURI;
 	String realPath, un, pw;
 	boolean sentOrNah;
 	ProgressDialog progressDialog;
-	int checkEverySnapIndex;
-	Boolean finishedLoading;
+	
+	
+	List<String> blockedFriendsNames;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		checkEverySnapIndex = 0;
 		SnapData.ctx = this.getApplicationContext();
-
+		blockedFriendsNames= new ArrayList<String>();
+		getBlockedFriendsNames();
+		
 		un = getIntent().getStringExtra("username");
 		pw = getIntent().getStringExtra("password");
 		startProgressDialog("Logging in...");
 
-		finishedLoading = false;
+		
 
 		Login lg = new Login();
 		lg.execute();
 
-		gridView = (GridView) findViewById(R.id.gridview);
-		gridView.setOnScrollListener(this);
-
-		gridView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v,
-					int position, long id) {
-				SnapData.currentByte = SnapData.byteList.get(position);
-				startActivity(new Intent(getApplicationContext(), BigView.class));
-			}
-		});
+		
+		
 	}
-
+public void goToFeed(View v){
+	Intent i= new Intent(this, FeedActivity.class);
+	i.putExtra("username", un);
+	startActivity(i);
+}
+	
+	
 	// shords = new ArrayList<String>();
 	// shords.add("amber_rubino");
 	// shords.add("briannnax");
@@ -140,83 +140,7 @@ public class HomeActivity extends Activity implements OnScrollListener {
 		}
 	}
 
-	private class MyAdapter extends BaseAdapter {
-		private LayoutInflater inflater;
-
-		public MyAdapter(Context context) {
-			inflater = LayoutInflater.from(context);
-
-		}
-
-		@Override
-		public int getCount() {			
-			return SnapData.byteList.size();
-		}
-
-		@Override
-		public Object getItem(int i) {
-			return SnapData.byteList.get(i);
-		}
-
-		@Override
-		public long getItemId(int i) {
-			return (long) (SnapData.byteList.get(i).hashCode());
-		}
-
-		@Override
-		public View getView(int i, View view, ViewGroup viewGroup) {
-			try {
-				View v = view;
-				ImageView picture;
-				TextView name;
-				
-				if (v == null) {
-					v = inflater.inflate(R.layout.gridview_item, viewGroup,
-							false);
-					v.setTag(R.id.picture, v.findViewById(R.id.picture));
-					v.setTag(R.id.text, v.findViewById(R.id.text));
-				}
-				picture = (ImageView) v.getTag(R.id.picture);
-				name = (TextView)v.getTag(R.id.text);
-				name.setText(SnapData.myStorys.get(i).getSender());
-				
-				byte[] storyBytes = SnapData.byteList.get(i);
-				BitmapFactory.Options options = new BitmapFactory.Options();// Create
-																			// object
-																			// of
-																			// bitmapfactory's
-																			// option
-																			// method
-																			// for
-																			// further
-																			// option
-																			// use
-				options.inPurgeable = true; // inPurgeable is used to free up
-											// memory while required
-				Bitmap bm = BitmapFactory.decodeByteArray(storyBytes, 0,
-						storyBytes.length, options);// Decode image, "thumbnail"
-													// is
-				// the object of image file
-				Bitmap bm2 = Bitmap.createScaledBitmap(bm, 280, 280, true);// convert
-																			// decoded
-																			// bitmap
-																			// into
-																			// well
-																			// scalled
-																			// Bitmap
-																			// format.
-
-				picture.setImageBitmap(bm2);
-				System.out.println("Adding immage");
-
-				return v;
-			} catch (Exception e) {
-				return null;
-			}
-
-		}
-	}
-
+	
 	private class Login extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... index) {
@@ -234,8 +158,15 @@ public class HomeActivity extends Activity implements OnScrollListener {
 					Friend[] possibleFriends = Snapchat.getFriends(loginObj);
 					List<Friend> checkForFriendName=new ArrayList<Friend>();
 					for(Friend fr:possibleFriends){								
+						
+						if(!blockedFriendsNames.contains(fr.getUsername())){
+						//only add nonblocked ones
 						checkForFriendName.add(fr);
 						SnapData.myFriends.add(fr);
+						
+						}else{
+							System.out.println("Too bad r blocked");
+						}
 					}
 					
 					
@@ -254,7 +185,13 @@ public class HomeActivity extends Activity implements OnScrollListener {
 						
 						//add to friends if not on there
 						if(!SnapData.myFriendsNames.contains(s.getSender())){
+							
+							//only add nonblocked ones
+							if(!blockedFriendsNames.contains(s.getSender())){
 							SnapData.myFriendsNames.add(s.getSender());
+							}else{
+								System.out.println("Too bad r blocked");
+							}
 						}
 						
 						
@@ -279,60 +216,13 @@ public class HomeActivity extends Activity implements OnScrollListener {
 		protected void onPostExecute(Void result) {
 			if (progressDialog != null)
 				progressDialog.dismiss();
-			adapter = new MyAdapter(getApplicationContext());
-			gridView.setAdapter(adapter);
-			finishedLoading = true;
+			
 			// adapter.notifyDataSetChanged();
 			// gridView.invalidateViews();
 		}
 	}
 
-	private class LoadStories extends AsyncTask<Integer, Integer, String> {
-		@Override
-		protected String doInBackground(Integer... index) {
-finishedLoading=false;
-			// get authentication token
-
-			int numLoading = 0;
-
-			while (numLoading < 8) {
-				Story s = SnapData.myStorys.get(checkEverySnapIndex);
-				
-
-				checkEverySnapIndex++;
-
-				if ( !SnapData.byteList.contains(Snapchat.getStory(s, un,
-								SnapData.authTokenSaved))) {
-					
-
-					byte[] storyBytes = Snapchat.getStory(s, un,
-							SnapData.authTokenSaved);
-					SnapData.byteList.add(storyBytes);
-
-					numLoading++;
-				}
-			}
-			return null;
-		}
-
-		@Override
-		public void onProgressUpdate(Integer... args) {
-			progressDialog.setProgress(args[0]);
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			
-			adapter.notifyDataSetChanged();
-			gridView.invalidateViews();
-			finishedLoading=true;
-		}
-	}
-
-	private void loadMore() {
-		LoadStories loadMore = new LoadStories();
-		loadMore.execute();
-	}
+	
 
 	// And to convert the image URI to the direct file system path of the image
 	// file
@@ -407,28 +297,30 @@ finishedLoading=false;
 		protected void onProgressUpdate(Void... values) {
 		}
 	}
-	// ----------------------------------------------
-	@Override
-	public void onScroll(AbsListView view, int firstVisibleItem,
-			int visibleItemCount, int totalItemCount) {
-		if (firstVisibleItem + visibleItemCount >= (totalItemCount-2)) {
-			// end has been reached. load more images
-
-			if (finishedLoading) {
-				loadMore();
-				Toast.makeText(getApplicationContext(), "Loading more snaps", Toast.LENGTH_LONG).show();
-				System.out.println("loading more on scroll");
-			}
-
-		}
-
-	}
-
-	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {
-	}
+	
 	
 	public void goToFriendsList(View v){
 startActivity(new Intent(this,FriendsList.class));
+	}
+	
+	public void getBlockedFriendsNames(){
+		String line;
+		BufferedReader in = null;
+
+		try {
+			in = new BufferedReader(new FileReader(new File(
+					getApplicationContext().getFilesDir(), "blocked.txt")));
+			while ((line = in.readLine()) != null) {
+				System.out.println(line);
+				blockedFriendsNames.add(line);	
+			}
+			in.close();
+			
+			
+		} catch (FileNotFoundException e) {
+			System.out.println(e);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
 	}
 }

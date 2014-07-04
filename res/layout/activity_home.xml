@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity" >
+    tools:context=".HomeActivity"
+    android:background="#FFFF00" >
 
     <Button
         android:id="@+id/button1"
@@ -11,25 +12,52 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:onClick="getImageUri"
-        android:text="UPLOAD IMAGE TO STORY" />
+        android:text="UPLOAD STORY" />
 
-    <GridView
-        android:id="@+id/gridview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/button1"
-        android:horizontalSpacing="0dp"
-        android:numColumns="2"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="0dp" />
+        android:text="Choose image from your gallery to upload to your Story\n\n\n" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:text="Friends" 
-        android:onClick="goToFriendsList"/>
+        android:layout_below="@+id/textView1"
+        android:onClick="goToFriendsList"
+        android:text="FRIENDS STORYS" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button2"
+        android:text="Click friend to view available storys. Swipe to block friends storys from appearing on this page. You should only keep the people you really want to see\n\n\n" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView2"
+        android:onClick="goToFeed"
+        android:text="ALL STORYS" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button3"
+        android:text="View all of your friends storys. In most recent order. \n\n\n" />
 
 </RelativeLayout>
