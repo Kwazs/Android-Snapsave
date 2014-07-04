@@ -24,15 +24,16 @@ public class BigView extends Activity {
 	MediaScannerConnection msConn;
 	FileOutputStream fileOutputStream;
 	File file1;
-
+	Bitmap bm;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_big_view);
 		iv = (ImageView) findViewById(R.id.imageView1);
-		Bitmap bm = Utility.getPhoto(SnapData.currentByte);
+		bm = Utility.getPhoto(SnapData.currentByte);
 		iv.setImageBitmap(bm);
-			savePhoto(bm);
+			
 
 	}
 	public void savePhoto(Bitmap bmp) {
@@ -82,7 +83,7 @@ public class BigView extends Activity {
 		Toast.makeText(getApplicationContext(), "Saved to Gallery", Toast.LENGTH_LONG)
 				.show();
 	}
-	public void goBack(View v){
-		finish();
+	public void save(View v){
+		savePhoto(bm);
 	}
 }

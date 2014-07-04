@@ -64,11 +64,8 @@ public class HomeActivity extends Activity {
 		pw = getIntent().getStringExtra("password");
 		startProgressDialog("Logging in...");
 
-		
-
 		Login lg = new Login();
 		lg.execute();
-
 		
 		
 	}
@@ -146,10 +143,13 @@ public void goToFeed(View v){
 		protected Void doInBackground(Void... index) {
 			JSONObject loginObj = Snapchat.login(un, pw);
 			try {
+				
+				
 				// get authentication token
 				if (loginObj != null) {
 					SnapData.authTokenSaved = loginObj
 							.getString(Snapchat.AUTH_TOKEN_KEY);
+					
 					
 					
 					SnapData.myFriends=new ArrayList<Friend>();
@@ -205,9 +205,9 @@ public void goToFeed(View v){
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
-				Toast.makeText(getApplicationContext(), "incorrect pw",
-						Toast.LENGTH_LONG).show();
-				finish();
+				//wrong password
+				startActivity(new Intent(getApplicationContext(),MainActivity.class));
+			
 			}
 			return null;
 		}
@@ -264,7 +264,7 @@ public void goToFeed(View v){
 				File cur = new File(getFilesDir() + "/image");
 				String mediaId = Snapchat.upload(cur, un,
 						SnapData.authTokenSaved, video);
-				int viewTime = 4; // seconds
+				int viewTime = 10; // seconds
 				String caption = "My Story"; // This is only shown in the story
 												// list, not on the actual story
 												// photo/video.

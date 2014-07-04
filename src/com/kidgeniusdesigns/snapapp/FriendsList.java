@@ -58,7 +58,6 @@ public class FriendsList extends ListActivity {
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
                                 	String fileData =adapter.getItem(position).toString();
-                                	adapter.remove(adapter.getItem(position));
                                 	blockUser(fileData);
                                 }
                                 adapter.notifyDataSetChanged();
@@ -99,7 +98,7 @@ public class FriendsList extends ListActivity {
 			out.write(un+"\n");
 			out.close();
 			
-			Toast.makeText(getApplicationContext(), "blocked "+un, Toast.LENGTH_LONG).show();
+        	Toast.makeText(getApplicationContext(), un+" won't show up next time", Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			System.out.print(e);
 		}

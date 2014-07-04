@@ -24,11 +24,11 @@ import android.widget.Toast;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
 
-public class FeedActivity extends Activity  implements OnScrollListener{
+public class FeedActivity extends Activity{
 	MyAdapter adapter;
 	GridView gridView;
 	Boolean finishedLoading;
-	int checkEverySnapIndex;
+	int checkEverySnapIndex, numOfSnapsOnScreen;
 	String un;
 	ProgressDialog progressDialog;
 	
@@ -37,10 +37,11 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feed);
 		checkEverySnapIndex = 0;
+		numOfSnapsOnScreen=0;
 		un = getIntent().getStringExtra("username");
 		finishedLoading = false;
 		gridView = (GridView) findViewById(R.id.gridview);
-		gridView.setOnScrollListener(this);
+
 		loadMore();
 		startProgressDialog("Fetching stories...");
 		gridView.setOnItemClickListener(new OnItemClickListener() {
@@ -56,8 +57,8 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 		adapter = new MyAdapter(getApplicationContext());
 		gridView.setAdapter(adapter);
 	}
-	public void goBack(View v){
-		finish();
+	public void goToBottom(View v){
+		gridView.smoothScrollToPosition(numOfSnapsOnScreen);
 	}
 	private class MyAdapter extends BaseAdapter {
 		private LayoutInflater inflater;
@@ -127,7 +128,9 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 
 				picture.setImageBitmap(bm2);
 				System.out.println("Adding immage");
-
+//when view is set increment num of images on screen
+				numOfSnapsOnScreen++;
+				
 				return v;
 			} catch (Exception e) {
 				return null;
@@ -139,12 +142,12 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 	private class LoadStories extends AsyncTask<Integer, Integer, String> {
 		@Override
 		protected String doInBackground(Integer... index) {
-finishedLoading=false;
 			// get authentication token
 
 			int numLoading = 0;
 
 			while (numLoading < 8) {
+				try{
 				Story s = SnapData.myStorys.get(checkEverySnapIndex);
 				
 
@@ -160,6 +163,13 @@ finishedLoading=false;
 
 					numLoading++;
 				}
+			}catch(Exception e){
+				finishedLoading=true;
+				System.out.println("YAY FINISHED LOADING EM ALL");
+				System.out.println(""+checkEverySnapIndex);
+				System.out.println(""+SnapData.myStorys.size());
+				return null;
+			}
 			}
 			return null;
 		}
@@ -171,29 +181,11 @@ finishedLoading=false;
 			
 			adapter.notifyDataSetChanged();
 			gridView.invalidateViews();
-			finishedLoading=true;
+			if(!finishedLoading)
+			loadMore();
 		}
 	}
-	// ----------------------------------------------
-		@Override
-		public void onScroll(AbsListView view, int firstVisibleItem,
-				int visibleItemCount, int totalItemCount) {
-			if (firstVisibleItem + visibleItemCount >= (totalItemCount-2)) {
-				// end has been reached. load more images
 
-				if (finishedLoading) {
-					loadMore();
-					Toast.makeText(getApplicationContext(), "Loading more snaps", Toast.LENGTH_LONG).show();
-					System.out.println("loading more on scroll");
-				}
-
-			}
-
-		}
-
-		@Override
-		public void onScrollStateChanged(AbsListView view, int scrollState) {
-		}
 	private void loadMore() {
 		LoadStories loadMore = new LoadStories();
 		loadMore.execute();
