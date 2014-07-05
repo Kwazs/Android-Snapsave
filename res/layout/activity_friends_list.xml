@@ -1,19 +1,50 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ListView
+        android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-        
-        <TextView android:id="@+id/output"
-                android:background="#758AA7" 
-                android:layout_height="wrap_content"
-                android:padding="1px"
-                android:textColor="#ffffff"
-                android:text="Friends: " android:layout_width="fill_parent" />
-        
-        <ListView
-            android:id="@android:id/list"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-        </ListView>
-    
-    </LinearLayout> 
+        android:layout_height="415dp"
+        android:layout_above="@+id/button3" >
+
+    </ListView>
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/button2"
+        android:background="@drawable/homeathomebutton"
+        android:onClick="goToHome" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/button1"
+        android:layout_toRightOf="@+id/button3"
+        android:background="@drawable/explorebutton"
+        android:onClick="goToTop" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/button2"
+       android:onClick="goToHome"
+android:background="@drawable/uploadbutton" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/button1"
+        android:background="@drawable/paststorys"
+        android:onClick="showTheToast" />
+</RelativeLayout>

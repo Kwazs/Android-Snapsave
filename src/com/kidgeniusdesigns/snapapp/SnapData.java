@@ -16,6 +16,7 @@ public class SnapData {
 	public static byte[] currentByte;
 	public static Context ctx;
 	public static Friend currentFriend;
+	public static String pw;
 
 	public SnapData(Context context) {
 	}

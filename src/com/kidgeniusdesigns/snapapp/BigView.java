@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
@@ -13,9 +14,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.habosa.javasnap.Friend;
 import com.kidgeniusdesigns.snapapp.helpers.Utility;
 
 public class BigView extends Activity {
@@ -25,12 +28,17 @@ public class BigView extends Activity {
 	FileOutputStream fileOutputStream;
 	File file1;
 	Bitmap bm;
+	Button nameButton;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_big_view);
+		setContentView(R.layout.activity_big_view);		
+		
 		iv = (ImageView) findViewById(R.id.imageView1);
+		nameButton=(Button) findViewById(R.id.nameButton);
+		nameButton.setText(getIntent().getStringExtra("sender"));
+		
 		bm = Utility.getPhoto(SnapData.currentByte);
 		iv.setImageBitmap(bm);
 			
@@ -85,5 +93,20 @@ public class BigView extends Activity {
 	}
 	public void save(View v){
 		savePhoto(bm);
+	}
+	public void goToSnaps(View v){
+		// set current friend and start next activity
+				for (Friend fr : SnapData.myFriends) {
+					if (fr.getUsername().contains(getIntent().getStringExtra("sender"))) {
+						Intent i = new Intent(this, FriendsSnapActivity.class);
+						i.putExtra("sender",getIntent().getStringExtra("sender"));
+						SnapData.currentFriend = fr;
+						startActivity(i);
+					}
+
+				}
+	}
+	public void back(View v){
+		finish();
 	}
 }

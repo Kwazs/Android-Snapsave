@@ -3,61 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeActivity"
-    android:background="#FFFF00" >
+    android:background="#FFFFFF" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:onClick="getImageUri"
-        android:text="UPLOAD STORY" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button1"
-        android:text="Choose image from your gallery to upload to your Story\n\n\n" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1"
-        android:onClick="goToFriendsList"
-        android:text="FRIENDS STORYS" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button2"
-        android:text="Click friend to view available storys. Swipe to block friends storys from appearing on this page. You should only keep the people you really want to see\n\n\n" />
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView2"
-        android:onClick="goToFeed"
-        android:text="ALL STORYS" />
+        android:layout_alignTop="@+id/button2"
+        android:background="@drawable/homeathomebutton" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button3"
-        android:text="View all of your friends storys. In most recent order. \n\n\n" />
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/button1"
+        android:layout_toRightOf="@+id/button3"
+        android:background="@drawable/explorebutton"/>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/button2"
+android:background="@drawable/uploadbutton" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="60dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/button1"
+        android:background="@drawable/paststorys" />
 
 </RelativeLayout>

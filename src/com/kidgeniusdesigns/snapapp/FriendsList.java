@@ -28,7 +28,7 @@ public class FriendsList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends_list);
 		// myFriends=SnapData.myFriends;
-
+getActionBar().setTitle("Swipe to unfollow from this list");
 		friendsUserNames = SnapData.myFriendsNames;
 		organizedFriendsUserNames = new String[friendsUserNames.size()];
 		int i = 0;
@@ -90,7 +90,16 @@ public class FriendsList extends ListActivity {
 				Toast.LENGTH_LONG).show();
 
 	}
-
+	public void goToHome(View v){
+		finish();
+	}
+	public void showTheToast(View v){
+		Toast.makeText(getApplicationContext(), "Soon will Track your storys", Toast.LENGTH_LONG).show();
+	}
+	
+public void goToTop(View v){
+	getListView().smoothScrollToPosition(21);
+}
 	public void blockUser(String un) {
 		try {
 			FileWriter out = new FileWriter(new File(getApplicationContext()
