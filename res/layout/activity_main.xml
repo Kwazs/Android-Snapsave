@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFFF00" >
+    android:background="@drawable/bg" >
 
     <Button
         android:id="@+id/loginButton"
@@ -40,4 +40,13 @@
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword" />
+
+<TextView
+    android:id="@+id/textView2"
+    android:layout_width="wrap_content"
+    android:layout_height="60dp"
+    android:layout_below="@+id/loginButton"
+    android:layout_centerHorizontal="true"
+    android:text="" />
+
 </RelativeLayout>

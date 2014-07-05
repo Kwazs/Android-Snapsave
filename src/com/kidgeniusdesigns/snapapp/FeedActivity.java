@@ -277,7 +277,7 @@ public class FeedActivity extends Activity{
 				
 
 				checkEverySnapIndex++;
-
+if(s!=null){
 				if ( !SnapData.byteList.contains(Snapchat.getStory(s, un,
 								SnapData.authTokenSaved))) {
 					
@@ -287,6 +287,7 @@ public class FeedActivity extends Activity{
 					SnapData.byteList.add(storyBytes);
 
 					numLoading++;
+				}
 				}
 			}catch(Exception e){
 				finishedLoading=true;
@@ -312,8 +313,12 @@ public class FeedActivity extends Activity{
 	}
 
 	private void loadMore() {
+		try{
 		LoadStories loadMore = new LoadStories();
 		loadMore.execute();
+		}catch(Exception e){
+			
+		}
 	}
 	public void startProgressDialog(String screen) {
 		progressDialog = new ProgressDialog(this);

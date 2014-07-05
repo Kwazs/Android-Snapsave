@@ -82,6 +82,7 @@ getActionBar().setTitle("Swipe to unfollow from this list");
 			if (fr.getUsername().contains(selectedValue)) {
 				Intent i = new Intent(this, FriendsSnapActivity.class);
 				SnapData.currentFriend = fr;
+				i.putExtra("sender", fr.getUsername());
 				startActivity(i);
 			}
 
@@ -108,7 +109,7 @@ public void goToTop(View v){
 			out.close();
 
 			Toast.makeText(getApplicationContext(),
-					un + " won't show up next time", Toast.LENGTH_LONG).show();
+					un + " won't show up next session", Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			System.out.print(e);
 		}
