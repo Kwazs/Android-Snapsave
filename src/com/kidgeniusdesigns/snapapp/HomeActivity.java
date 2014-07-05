@@ -25,6 +25,7 @@ import android.provider.MediaStore;
 import android.view.View;
 
 import com.habosa.javasnap.Friend;
+import com.habosa.javasnap.Snap;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
 
@@ -127,6 +128,12 @@ public void goToFeed(View v){
 						}
 					}
 		
+					//add snaps!
+					SnapData.unreadSnaps = new ArrayList<Snap>();
+					Snap[] snapsArray =Snapchat.getSnaps(loginObj);
+					for(Snap s: snapsArray){
+						System.out.println(s.getSender());
+					}
 					
 					
 					//SnapData.myFriends= new ArrayList<Friend>();
