@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-
-    <Button
+<Button
         android:id="@+id/button3"
         android:layout_width="70dp"
         android:layout_height="58dp"
@@ -19,7 +18,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/button3"
         android:background="@drawable/explorebutton"
-        android:onClick="goToFriendsList" />
+        android:onClick="back" />
 
     <Button
         android:id="@+id/button5"
@@ -47,37 +46,4 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/uploadbutton"
         android:onClick="back" />
-
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/default_video_poster" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button5"
-        android:layout_alignParentRight="true"
-        android:onClick="save"
-        android:text="Save" />
-
-    <Button
-        android:id="@+id/nameButton"
-        android:layout_width="wrap_content"
-        android:layout_height="?android:attr/actionBarSize"
-        android:layout_above="@+id/button3"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/button1"
-        android:background="#517fa4"
-        android:onClick="goToSnaps"
-        android:text="500Mill "
-        android:textColor="#FFFFFF"
-        android:textSize="30dp" />
-
 </RelativeLayout>

@@ -44,6 +44,12 @@ public class BigView extends Activity {
 			
 
 	}
+	public void goToFriendsList(View v){
+		Intent intent=new Intent(this,FriendsList.class);
+		
+
+	    startActivity(intent);
+			}
 	public void savePhoto(Bitmap bmp) {
 		imageFileFolder = new File(Environment.getExternalStorageDirectory(),
 				"Saved Snaps");

@@ -48,15 +48,17 @@ public class FriendsSnapActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v,
 					int position, long id) {
-				SnapData.currentByte = SnapData.byteList.get(position);
+				SnapData.currentByte = SnapData.friendsByteList.get(position);
 				Intent intnr = new Intent(getApplicationContext(), BigView.class);
-				intnr.putExtra("sender",SnapData.myStorys.get(position).getSender());
+				intnr.putExtra("sender",getIntent().getStringExtra("sender"));
 				startActivity(intnr);
 			}
 		});
 		
 	}
-	
+	public void goToFriendsList(View v){
+		startActivity(new Intent(this,FriendsList.class));
+	}
 	private class MyAdapter extends BaseAdapter {
 		private LayoutInflater inflater;
 

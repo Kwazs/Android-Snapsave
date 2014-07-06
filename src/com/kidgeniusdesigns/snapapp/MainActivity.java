@@ -10,10 +10,8 @@ import java.io.IOException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
@@ -30,10 +28,6 @@ public class MainActivity extends Activity {
 		
 		username.setHint("username");
 		getNameAndPw();
-		Toast toast=
-		Toast.makeText(getApplicationContext(), "Huge updates coming July 7th", Toast.LENGTH_LONG);
-		toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);		
-	toast.show();
 	
 	}
 	

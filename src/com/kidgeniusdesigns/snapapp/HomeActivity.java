@@ -1,12 +1,7 @@
 package com.kidgeniusdesigns.snapapp;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +20,6 @@ import android.provider.MediaStore;
 import android.view.View;
 
 import com.habosa.javasnap.Friend;
-import com.habosa.javasnap.Snap;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
 
@@ -34,9 +28,7 @@ public class HomeActivity extends Activity {
 	
 	String realPath, un, pw;
 	
-	ProgressDialog progressDialog;
-	List<String> blockedFriendsNames;
-	
+	ProgressDialog progressDialog;	
 	
 
 	@Override
@@ -44,15 +36,12 @@ public class HomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		SnapData.ctx = this.getApplicationContext();
-		
-		blockedFriendsNames= new ArrayList<String>();
+
 		ActionBar bar = getActionBar();
 		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#517fa4")));
 		bar.setTitle("InstaSnap");
 		bar.setIcon(
-				   new ColorDrawable(getResources().getColor(android.R.color.transparent)));   
-		getBlockedFriendsNames();
-		
+				   new ColorDrawable(getResources().getColor(android.R.color.transparent)));   		
 		
 		un = getIntent().getStringExtra("username");
 		pw = getIntent().getStringExtra("password");
@@ -111,32 +100,13 @@ public void goToFeed(View v){
 					SnapData.authTokenSaved = loginObj
 							.getString(Snapchat.AUTH_TOKEN_KEY);
 					
-					
-					SnapData.myFriends=new ArrayList<Friend>();
 					SnapData.myFriendsNames=new ArrayList<String>();
-					// get friends list
-					Friend[] possibleFriends = Snapchat.getFriends(loginObj);
-					List<Friend> checkForFriendName=new ArrayList<Friend>();
-					for(Friend fr:possibleFriends){								
-						if(!blockedFriendsNames.contains(fr.getUsername())){
-						//only add nonblocked ones
-						checkForFriendName.add(fr);
-						SnapData.myFriends.add(fr);
-						
-						}else{
-							System.out.println("Too bad r blocked");
-						}
-					}
-		
-					//add snaps!
-					SnapData.unreadSnaps = new ArrayList<Snap>();
-					Snap[] snapsArray =Snapchat.getSnaps(loginObj);
-					for(Snap s: snapsArray){
-						System.out.println(s.getSender());
-					}
 					
+					Friend[] possibleFriends = Snapchat.getFriends(loginObj);					
+						SnapData.myFriends=Arrays.asList(possibleFriends);
+
+	
 					
-					//SnapData.myFriends= new ArrayList<Friend>();
 					// get storys
 					Story[] notdownloadable = Snapchat.getStories(un,
 							SnapData.authTokenSaved);
@@ -145,15 +115,11 @@ public void goToFeed(View v){
 					
 					for(Story s:Story
 							.filterDownloadable(notdownloadable)){
+						String sender=s.getSender();
 						//add to friends if not on there
-						if(!SnapData.myFriendsNames.contains(s.getSender())){
+						if(!SnapData.myFriendsNames.contains(sender)){
 							
-							//only add nonblocked ones
-							if(!blockedFriendsNames.contains(s.getSender())){
-							SnapData.myFriendsNames.add(s.getSender());
-							}else{
-								System.out.println("Too bad r blocked");
-							}
+							SnapData.myFriendsNames.add(sender);
 						}
 						
 						
@@ -203,28 +169,6 @@ public void goToFeed(View v){
 		cursor.moveToFirst();
 
 		return cursor.getString(column_index);
-	}
-
-	
-	public void getBlockedFriendsNames(){
-		String line;
-		BufferedReader in = null;
-
-		try {
-			in = new BufferedReader(new FileReader(new File(
-					getApplicationContext().getFilesDir(), "blocked.txt")));
-			while ((line = in.readLine()) != null) {
-				System.out.println(line);
-				blockedFriendsNames.add(line);	
-			}
-			in.close();
-			
-			
-		} catch (FileNotFoundException e) {
-			System.out.println(e);
-		} catch (IOException e) {
-			System.out.println(e);
-		}
 	}
 	
 	

@@ -1,18 +1,11 @@
 package com.kidgeniusdesigns.snapapp;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -26,9 +19,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -37,11 +33,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.habosa.javasnap.Friend;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
 
-public class FeedActivity extends Activity{
+public class FeedActivity extends Activity  implements OnScrollListener{
 	MyAdapter adapter;
 	GridView gridView;
 	Boolean finishedLoading;
@@ -86,6 +81,7 @@ public class FeedActivity extends Activity{
 		
 		adapter = new MyAdapter(getApplicationContext());
 		gridView.setAdapter(adapter);
+		gridView.setOnScrollListener(this);
 	}
 	
 	public void getImageUri(View v) {
@@ -156,7 +152,7 @@ public class FeedActivity extends Activity{
 						storyBytes.length, options);// Decode image, "thumbnail"
 													// is
 				// the object of image file
-				Bitmap bm2 = Bitmap.createScaledBitmap(bm, 280, 280, true);// convert
+				Bitmap bm2 = Bitmap.createScaledBitmap(bm, 240, 240, true);// convert
 																			// decoded
 																			// bitmap
 																			// into
@@ -172,14 +168,18 @@ public class FeedActivity extends Activity{
 				
 				return v;
 			} catch (Exception e) {
-				return null;
+			e.printStackTrace();
+			return view;
 			}
 
 		}
 	}
 	
 	public void goToFriendsList(View v){
-		startActivity(new Intent(this,FriendsList.class));
+		Intent intent=new Intent(this,FriendsList.class);
+		
+
+	    startActivity(intent);
 			}
 	public byte[] getBytes(InputStream inputStream) throws IOException {
 		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
@@ -237,8 +237,6 @@ public class FeedActivity extends Activity{
 						caption, un, SnapData.authTokenSaved);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				Toast.makeText(getApplicationContext(), "fnf",
-						Toast.LENGTH_LONG).show();
 			}
 			return "Executed";
 		}
@@ -248,10 +246,20 @@ public class FeedActivity extends Activity{
 			// Toast.makeText(getApplicationContext(),
 			// "ff"+sentOrNah+SnapData.authTokenSaved,
 			// Toast.LENGTH_LONG).show();
-			if (sentOrNah)
+			if (sentOrNah){
+				Toast tst= 
 				Toast.makeText(getApplicationContext(),
-						"Succesfully Uploaded to Story", Toast.LENGTH_SHORT)
-						.show();
+						"Succesfully Uploaded to Story", Toast.LENGTH_SHORT);
+				tst.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+						
+						tst.show();
+			}else{
+				Toast tst=Toast.makeText(getApplicationContext(),
+						"Error occured please try again later", Toast.LENGTH_SHORT);
+				tst.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
+				
+				tst.show();
+			}
 		}
 
 		@Override
@@ -267,17 +275,17 @@ public class FeedActivity extends Activity{
 	private class LoadStories extends AsyncTask<Integer, Integer, String> {
 		@Override
 		protected String doInBackground(Integer... index) {
-			// get authentication token
+			finishedLoading=false;
 
 			int numLoading = 0;
-
+			try{
 			while (numLoading < 8) {
-				try{
+				
 				Story s = SnapData.myStorys.get(checkEverySnapIndex);
 				
 
 				checkEverySnapIndex++;
-if(s!=null){
+				if(s!=null){
 				if ( !SnapData.byteList.contains(Snapchat.getStory(s, un,
 								SnapData.authTokenSaved))) {
 					
@@ -289,13 +297,14 @@ if(s!=null){
 					numLoading++;
 				}
 				}
+			
+			}
 			}catch(Exception e){
 				finishedLoading=true;
 				System.out.println("YAY FINISHED LOADING EM ALL");
 				System.out.println(""+checkEverySnapIndex);
 				System.out.println(""+SnapData.myStorys.size());
 				return null;
-			}
 			}
 			return null;
 		}
@@ -307,8 +316,7 @@ if(s!=null){
 			
 			adapter.notifyDataSetChanged();
 			gridView.invalidateViews();
-			if(!finishedLoading)
-			loadMore();
+			finishedLoading=true;
 		}
 	}
 
@@ -328,6 +336,32 @@ if(s!=null){
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		progressDialog.show();
 	}
+	public void goToDumbActivity(View v){
+		Toast toast = Toast.makeText(getApplicationContext(), "Scrolling to the bottom", Toast.LENGTH_LONG);
+		toast.setGravity(Gravity.CENTER, 0, 0);
+		toast.show();
+		gridView.smoothScrollToPosition(numOfSnapsOnScreen-1);
+	}
 	
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		if (firstVisibleItem + visibleItemCount >= (totalItemCount-4)) {
+			// end has been reached. load more images
+			if (finishedLoading) {
+				loadMore();
+				System.out.println();
+				Toast toast = Toast.makeText(getApplicationContext(), "loading more", Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+			}
+
+		}
+
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+	}
 	
 }

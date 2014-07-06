@@ -1,34 +1,48 @@
 package com.kidgeniusdesigns.snapapp;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.habosa.javasnap.Friend;
-import com.kidgeniusdesigns.snapapp.helpers.SwipeDismissListViewTouchListener;
 
 public class FriendsList extends ListActivity {
 	List<String> friendsUserNames;
 	String[] organizedFriendsUserNames;
 	ArrayAdapter<String> adapter;
-
+	 // Search EditText
+    EditText inputSearch;
+    
 	// List<Friend> myFriends;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends_list);
+		
+		ActionBar bar = getActionBar();
+		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#517fa4")));
+		bar.setTitle("InstaSnap");
+		bar.setIcon(
+				   new ColorDrawable(getResources().getColor(android.R.color.transparent)));   
+		
+		
+		
 		// myFriends=SnapData.myFriends;
-getActionBar().setTitle("Swipe to unfollow from this list");
+		inputSearch = (EditText) findViewById(R.id.inputSearch);
+
 		friendsUserNames = SnapData.myFriendsNames;
 		organizedFriendsUserNames = new String[friendsUserNames.size()];
 		int i = 0;
@@ -39,37 +53,24 @@ getActionBar().setTitle("Swipe to unfollow from this list");
 		Arrays.sort(organizedFriendsUserNames);
 
 		adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, organizedFriendsUserNames);
+				R.layout.list_item, organizedFriendsUserNames);
 
 		// Assign adapter to List
 		setListAdapter(adapter);
 
-		// set swipe to block
-		SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
-				getListView(),
-				new SwipeDismissListViewTouchListener.DismissCallbacks() {
-					@Override
-					public boolean canDismiss(int position) {
-						return true;
-					}
-
-					@Override
-					public void onDismiss(ListView listView,
-							int[] reverseSortedPositions) {
-						for (int position : reverseSortedPositions) {
-							String fileData = adapter.getItem(position)
-									.toString();
-							blockUser(fileData);
-						}
-						adapter.notifyDataSetChanged();
-					}
-				});
-		getListView().setOnTouchListener(touchListener);
-		// Setting this scroll listener is required to ensure that during
-		// ListView scrolling,
-		// we don't look for swipes.
-		getListView().setOnScrollListener(touchListener.makeScrollListener());
-
+		inputSearch.addTextChangedListener(new TextWatcher() {
+		     
+		    @Override
+		    public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+		        // When user changed the Text
+		        FriendsList.this.adapter.getFilter().filter(cs);   
+		    }
+		    @Override
+		    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+		            int arg3) {	}
+		    @Override
+		    public void afterTextChanged(Editable arg0) {		    }
+		});
 	}
 
 	@Override
@@ -94,24 +95,25 @@ getActionBar().setTitle("Swipe to unfollow from this list");
 	public void goToHome(View v){
 		finish();
 	}
-	public void showTheToast(View v){
-		Toast.makeText(getApplicationContext(), "Soon will Track your storys", Toast.LENGTH_LONG).show();
+	public void goToHomeTryAgain(View v){
+		Toast.makeText(getApplicationContext(),
+				"try again", Toast.LENGTH_LONG).show();
+		finish();
 	}
-	
 public void goToTop(View v){
 	getListView().smoothScrollToPosition(21);
 }
-	public void blockUser(String un) {
-		try {
-			FileWriter out = new FileWriter(new File(getApplicationContext()
-					.getFilesDir(), "blocked.txt"), true);
-			out.write(un + "\n");
-			out.close();
-
-			Toast.makeText(getApplicationContext(),
-					un + " won't show up next session", Toast.LENGTH_LONG).show();
-		} catch (IOException e) {
-			System.out.print(e);
-		}
-	}
+//	public void blockUser(String un) {
+//		try {
+//			FileWriter out = new FileWriter(new File(getApplicationContext()
+//					.getFilesDir(), "blocked.txt"), true);
+//			out.write(un + "\n");
+//			out.close();
+//
+//			Toast.makeText(getApplicationContext(),
+//					un + " won't show up next session", Toast.LENGTH_LONG).show();
+//		} catch (IOException e) {
+//			System.out.print(e);
+//		}
+//	}
 }
