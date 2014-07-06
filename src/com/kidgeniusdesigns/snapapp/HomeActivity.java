@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.habosa.javasnap.Friend;
 import com.habosa.javasnap.Snapchat;
@@ -28,7 +29,7 @@ public class HomeActivity extends Activity {
 	
 	String realPath, un, pw;
 	
-	ProgressDialog progressDialog;	
+	ProgressBar loadingCircle;	
 	
 
 	@Override
@@ -45,7 +46,10 @@ public class HomeActivity extends Activity {
 		
 		un = getIntent().getStringExtra("username");
 		pw = getIntent().getStringExtra("password");
-		startProgressDialog("Logging in...");
+		loadingCircle=(ProgressBar)findViewById(R.id.progressBar1);
+		loadingCircle.setVisibility(ProgressBar.VISIBLE);
+		
+		
 		SnapData.pw=pw;
 		Login lg = new Login();
 		lg.execute();
@@ -57,34 +61,6 @@ public void goToFeed(View v){
 	i.putExtra("username", un);
 	startActivity(i);
 }
-	
-	
-	// shords = new ArrayList<String>();
-	// shords.add("amber_rubino");
-	// shords.add("briannnax");
-	// shords.add("brandymillerr");
-	// shords.add("sophiaxoxorose");
-	// shords.add("emileesawyer69");
-	// shords.add("gillianhill");
-	// shords.add("crystaleee");
-	// shords.add("kclear24");
-	// shords.add("lacylaplantee");
-	// shords.add("itslindsanity");
-	// shords.add("lnsylove14");
-	// shords.add("sarrahmarie44");
-	// shords.add("menacedennis");
-	// shords.add("choiboiiiii");
-	public void startProgressDialog(String screen) {
-		progressDialog = new ProgressDialog(this);
-		progressDialog.setTitle("Loading");
-		progressDialog.setMessage(screen);
-		progressDialog.setCancelable(false);
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		progressDialog.show();
-	}
-
-	
-
 	
 
 	
@@ -143,8 +119,8 @@ public void goToFeed(View v){
 
 		@Override
 		protected void onPostExecute(Void result) {
-			if (progressDialog != null)
-				progressDialog.dismiss();
+			if (loadingCircle != null)
+				loadingCircle.setVisibility(ProgressBar.GONE);
 			
 			Intent i= new Intent(getApplicationContext(), FeedActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

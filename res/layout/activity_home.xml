@@ -9,7 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
 
         <Button
             android:id="@+id/button3"
@@ -19,7 +20,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignTop="@+id/button2"
             android:background="@drawable/homeathomebutton"
-            android:onClick="goToBottom" />
+            />
 
         <Button
             android:id="@+id/button2"
@@ -28,7 +29,7 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/button3"
             android:background="@drawable/explorebutton"
-            android:onClick="goToFriendsList" />
+             />
 
         <Button
             android:id="@+id/button5"
@@ -46,7 +47,7 @@
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/button5"
             android:background="@drawable/commentbutton"
-            android:onClick="goToFriendsList" />
+             />
 
         <Button
             android:id="@+id/button1"
@@ -55,7 +56,26 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/uploadbutton"
-            android:onClick="getImageUri" />
+             />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button3"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/helper" >
+
+            <ProgressBar
+                android:id="@+id/progressBar1"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
