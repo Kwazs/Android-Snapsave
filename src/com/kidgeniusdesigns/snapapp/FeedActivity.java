@@ -43,7 +43,7 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 	int checkEverySnapIndex, numOfSnapsOnScreen;
 	String un;
 	ProgressDialog progressDialog;
-	boolean sentOrNah;
+	boolean sentOrNah, first;
 	Uri currImageURI;
 	
 	
@@ -51,7 +51,7 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_feed);
-		
+		first=true;
 		ActionBar bar = getActionBar();
 		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#517fa4")));
 		bar.setTitle("InstaSnap");
@@ -78,9 +78,6 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 			}
 		});
 	
-		
-		adapter = new MyAdapter(getApplicationContext());
-		gridView.setAdapter(adapter);
 		gridView.setOnScrollListener(this);
 	}
 	
@@ -314,9 +311,25 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 			if (progressDialog != null)
 				progressDialog.dismiss();
 			
+			
+			if(first){
+				if(SnapData.byteList.size()<1||SnapData.byteList==null){
+					//wrong password
+					Intent i=new Intent(getApplicationContext(),MainActivity.class);
+					i.putExtra("wrong", "Wrong password");
+					startActivity(i);
+				}
+				
+				finishedLoading=true;
+				adapter = new MyAdapter(getApplicationContext());
+				gridView.setAdapter(adapter);
+				first=false;
+			}
+			else{
 			adapter.notifyDataSetChanged();
 			gridView.invalidateViews();
 			finishedLoading=true;
+			}
 		}
 	}
 
@@ -342,7 +355,6 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 		toast.show();
 		gridView.smoothScrollToPosition(numOfSnapsOnScreen-1);
 	}
-	
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {

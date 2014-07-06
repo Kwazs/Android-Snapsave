@@ -34,8 +34,8 @@
             android:layout_height="58dp"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/button3"
-            android:background="@drawable/explorebutton"
-            android:onClick="back" />
+            android:background="@drawable/homeathomebutton"
+            android:onClick="back"  />
 
         <Button
             android:id="@+id/button5"
@@ -52,7 +52,7 @@
             android:layout_height="58dp"
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/button5"
-            android:background="@drawable/commentbutton"
+            android:background="@drawable/homeathomebutton"
             android:onClick="back" />
 
         <Button
@@ -61,8 +61,8 @@
             android:layout_height="58dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/uploadbutton"
-            android:onClick="back" />
+           android:background="@drawable/homeathomebutton"
+            android:onClick="back"  />
 
     </RelativeLayout>
 </RelativeLayout>

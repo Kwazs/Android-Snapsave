@@ -57,7 +57,8 @@ public class FriendsSnapActivity extends Activity {
 		
 	}
 	public void goToFriendsList(View v){
-		startActivity(new Intent(this,FriendsList.class));
+		Intent i=new Intent(this,FriendsList.class);
+		startActivity(i);
 	}
 	private class MyAdapter extends BaseAdapter {
 		private LayoutInflater inflater;

@@ -46,7 +46,7 @@ public class HomeActivity extends Activity {
 		un = getIntent().getStringExtra("username");
 		pw = getIntent().getStringExtra("password");
 		startProgressDialog("Logging in...");
-SnapData.pw=pw;
+		SnapData.pw=pw;
 		Login lg = new Login();
 		lg.execute();
 		
@@ -133,7 +133,9 @@ public void goToFeed(View v){
 			} catch (JSONException e) {
 				e.printStackTrace();
 				//wrong password
-				startActivity(new Intent(getApplicationContext(),MainActivity.class));
+				Intent i=new Intent(getApplicationContext(),MainActivity.class);
+				i.putExtra("wrong", "Wrong password");
+				startActivity(i);
 			
 			}
 			return null;
@@ -145,6 +147,7 @@ public void goToFeed(View v){
 				progressDialog.dismiss();
 			
 			Intent i= new Intent(getApplicationContext(), FeedActivity.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			i.putExtra("username", un);
 			startActivity(i);
 		}

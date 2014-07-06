@@ -46,7 +46,6 @@ public class BigView extends Activity {
 	}
 	public void goToFriendsList(View v){
 		Intent intent=new Intent(this,FriendsList.class);
-		
 
 	    startActivity(intent);
 			}
