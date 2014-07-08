@@ -17,22 +17,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
+import com.kidgeniusdesigns.snapapp.helpers.MyApplication;
 
 public class FriendsSnapActivity extends Activity {
 	MyAdapter adapter;
 	GridView gridView;
+	ProgressBar friendProgressBar;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends_snap);
+		//Get a Tracker (should auto-report)
+		((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.APP_TRACKER);
 		ActionBar bar = getActionBar();
 		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#517fa4")));
 		
@@ -55,8 +62,25 @@ public class FriendsSnapActivity extends Activity {
 				startActivity(intnr);
 			}
 		});
-		
+		friendProgressBar= (ProgressBar)findViewById(R.id.friendsProgressBar);
+		friendProgressBar.setVisibility(ProgressBar.VISIBLE);
 	}
+	@Override
+    protected void onStart() {
+        super.onStart();
+      //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+    	GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+    /* (non-Javadoc)
+    * @see android.app.Activity#onStop()
+    */
+    @Override
+    protected void onStop() {
+        super.onStop();
+      //Stop the analytics tracking
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+
+    }
 	public void goToFriendsList(View v){
 		Intent i=new Intent(this,FriendsList.class);
 		startActivity(i);
@@ -176,7 +200,7 @@ return null;
 
 		@Override
 		protected void onPostExecute(String result) {
-			
+			friendProgressBar.setVisibility(ProgressBar.GONE);
 			adapter = new MyAdapter(getApplicationContext());
 			gridView.setAdapter(adapter);
 		}

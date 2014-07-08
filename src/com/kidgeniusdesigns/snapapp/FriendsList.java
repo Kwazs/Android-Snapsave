@@ -17,7 +17,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.habosa.javasnap.Friend;
+import com.kidgeniusdesigns.snapapp.helpers.MyApplication;
 
 public class FriendsList extends ListActivity {
 	List<String> friendsUserNames;
@@ -31,7 +33,8 @@ public class FriendsList extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_friends_list);
-		
+		//Get a Tracker (should auto-report)
+		((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.APP_TRACKER);
 		ActionBar bar = getActionBar();
 		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#517fa4")));
 		bar.setTitle("InstaSnap");
@@ -72,7 +75,22 @@ public class FriendsList extends ListActivity {
 		    public void afterTextChanged(Editable arg0) {		    }
 		});
 	}
+	@Override
+    protected void onStart() {
+        super.onStart();
+      //Get an Analytics tracker to report app starts & uncaught exceptions etc.
+    	GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+    /* (non-Javadoc)
+    * @see android.app.Activity#onStop()
+    */
+    @Override
+    protected void onStop() {
+        super.onStop();
+      //Stop the analytics tracking
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
 
+    }
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		// get selected items
@@ -88,8 +106,6 @@ public class FriendsList extends ListActivity {
 			}
 
 		}
-		Toast.makeText(getApplicationContext(), selectedValue,
-				Toast.LENGTH_LONG).show();
 
 	}
 	public void goToHome(View v){

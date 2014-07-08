@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
-        android:hint="Username"
+        android:hint="username"
         android:ems="10" />
 
 <EditText
