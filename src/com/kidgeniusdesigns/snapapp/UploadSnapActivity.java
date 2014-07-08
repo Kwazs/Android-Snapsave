@@ -75,9 +75,16 @@ public class UploadSnapActivity extends Activity {
 
     }
 	public void upload(View v){
+		String caption;
+		if(captionEditText.getText().toString().length()>1){
+			caption=captionEditText.getText().toString();
+		}else{
+			caption=" ";
+		}
+		
 		Bitmap withCaption=drawTextToBitmap(getApplicationContext(), 
 				  curBit, 
-				  captionEditText.getText().toString());
+				  caption);
 		picture.setImageBitmap(withCaption);
 		
 		//create a file to write bitmap data
