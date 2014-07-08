@@ -1,12 +1,5 @@
 package com.kidgeniusdesigns.snapapp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -16,9 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +37,7 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 	String un;
 	ProgressDialog progressDialog;
 	boolean sentOrNah, first;
-	Uri currImageURI;
+	
 	
 	
 	@Override
@@ -82,12 +75,9 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 	}
 	
 	public void getImageUri(View v) {
-		// To open up a gallery browser
-		Intent intent = new Intent();
-		intent.setType("image/*");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
-		startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-				1);
+		Intent i=new Intent(this, UploadSnapActivity.class);
+		i.putExtra("username", getIntent().getStringExtra("username"));
+		startActivity(i);
 	}
 	public void goToBottom(View v){
 		gridView.smoothScrollToPosition(0);
@@ -148,8 +138,15 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 				Bitmap bm = BitmapFactory.decodeByteArray(storyBytes, 0,
 						storyBytes.length, options);// Decode image, "thumbnail"
 													// is
+				
+				
+				
+				DisplayMetrics dimension = new DisplayMetrics();
+		        getWindowManager().getDefaultDisplay().getMetrics(dimension);
+		        int width = dimension.widthPixels;
+				
 				// the object of image file
-				Bitmap bm2 = Bitmap.createScaledBitmap(bm, 240, 240, true);// convert
+				Bitmap bm2 = Bitmap.createScaledBitmap(bm, width/2, 2*width/3, true);// convert
 																			// decoded
 																			// bitmap
 																			// into
@@ -178,95 +175,10 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 
 	    startActivity(intent);
 			}
-	public byte[] getBytes(InputStream inputStream) throws IOException {
-		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-		int bufferSize = 1024;
-		byte[] buffer = new byte[bufferSize];
-
-		int len = 0;
-		while ((len = inputStream.read(buffer)) != -1) {
-			byteBuffer.write(buffer, 0, len);
-		}
-		return byteBuffer.toByteArray();
-	}
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {
-			if (requestCode == 1) {
-				// currImageURI is the global variable I'm using to hold the
-				// content:// URI of the image
-				currImageURI = data.getData();
-				InputStream iStream;
-				try {
-					iStream = getContentResolver()
-							.openInputStream(currImageURI);
-					byte[] inputData = getBytes(iStream);
-					String filename = "image";
-					FileOutputStream outputStream = openFileOutput(filename,
-							Context.MODE_PRIVATE);
-					outputStream.write(inputData);
-					outputStream.close();
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				UploadSnap upl = new UploadSnap();
-				upl.execute("", "");
-			}
-		}
-	}
 	
-	private class UploadSnap extends AsyncTask<String, Void, String> {
-
-		@Override
-		protected String doInBackground(String... params) {
-			try {
-				boolean video = false;
-				File cur = new File(getFilesDir() + "/image");
-				String mediaId = Snapchat.upload(cur, un,
-						SnapData.authTokenSaved, video);
-				int viewTime = 10; // seconds
-				String caption = "My Story"; // This is only shown in the story
-												// list, not on the actual story
-												// photo/video.
-				sentOrNah = Snapchat.sendStory(mediaId, viewTime, video,
-						caption, un, SnapData.authTokenSaved);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-			return "Executed";
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// Toast.makeText(getApplicationContext(),
-			// "ff"+sentOrNah+SnapData.authTokenSaved,
-			// Toast.LENGTH_LONG).show();
-			if (sentOrNah){
-				Toast tst= 
-				Toast.makeText(getApplicationContext(),
-						"Succesfully Uploaded to Story", Toast.LENGTH_SHORT);
-				tst.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
-						
-						tst.show();
-			}else{
-				Toast tst=Toast.makeText(getApplicationContext(),
-						"Error occured please try again later", Toast.LENGTH_SHORT);
-				tst.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
-				
-				tst.show();
-			}
-		}
-
-		@Override
-		protected void onPreExecute() {
-		}
-
-		@Override
-		protected void onProgressUpdate(Void... values) {
-		}
-	}
+	
+	
+	
 	
 
 	private class LoadStories extends AsyncTask<Integer, Integer, String> {
@@ -363,9 +275,6 @@ public class FeedActivity extends Activity  implements OnScrollListener{
 			if (finishedLoading) {
 				loadMore();
 				System.out.println();
-				Toast toast = Toast.makeText(getApplicationContext(), "loading more", Toast.LENGTH_LONG);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
 			}
 
 		}

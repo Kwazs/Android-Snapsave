@@ -65,7 +65,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/helper" >
+            android:background="@drawable/loginbg" >
 
             <ProgressBar
                 android:id="@+id/progressBar1"

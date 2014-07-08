@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,8 +117,12 @@ public class FriendsSnapActivity extends Activity {
 				Bitmap bm = BitmapFactory.decodeByteArray(storyBytes, 0,
 						storyBytes.length, options);// Decode image, "thumbnail"
 													// is
+				DisplayMetrics dimension = new DisplayMetrics();
+		        getWindowManager().getDefaultDisplay().getMetrics(dimension);
+		        int width = dimension.widthPixels;
+				
 				// the object of image file
-				Bitmap bm2 = Bitmap.createScaledBitmap(bm, 280, 280, true);// convert
+				Bitmap bm2 = Bitmap.createScaledBitmap(bm, width/2, 2*width/3, true);// convert
 																			// decoded
 																			// bitmap
 																			// into
