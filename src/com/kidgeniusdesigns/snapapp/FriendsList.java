@@ -122,7 +122,7 @@ public class FriendsList extends ListActivity {
 		finish();
 	}
 public void goToTop(View v){
-	getListView().smoothScrollToPosition(21);
+	getListView().smoothScrollToPosition(0);
 }
 //	public void blockUser(String un) {
 //		try {

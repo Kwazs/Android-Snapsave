@@ -20,6 +20,8 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.habosa.javasnap.Friend;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;

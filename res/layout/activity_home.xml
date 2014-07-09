@@ -38,7 +38,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/selfbutton"
-            android:onClick="goToFriendsList" />
+             />
 
         <Button
             android:id="@+id/button4"

@@ -12,7 +12,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -103,12 +101,12 @@ public class FeedActivity extends Activity implements OnScrollListener {
 	}
 
 	// Invoke displayInterstitial() when you are ready to display an
-	// interstitial.
-	public void displayInterstitial() {
-		if (interstitial.isLoaded()) {
-			interstitial.show();
+		// interstitial.
+		public void displayInterstitial() {
+			if (interstitial.isLoaded()) {
+				interstitial.show();
+			}
 		}
-	}
 
 	@Override
 	protected void onStart() {
@@ -266,8 +264,6 @@ public class FeedActivity extends Activity implements OnScrollListener {
 			} catch (Exception e) {
 				finishedLoading = true;
 				System.out.println("YAY FINISHED LOADING EM ALL");
-				System.out.println("" + checkEverySnapIndex);
-				System.out.println("" + SnapData.myStorys.size());
 				return null;
 			}
 			return null;
@@ -325,7 +321,7 @@ public class FeedActivity extends Activity implements OnScrollListener {
 //				"Scrolling to the bottom", Toast.LENGTH_LONG);
 //		toast.setGravity(Gravity.CENTER, 0, 0);
 //		toast.show();
-//		gridView.smoothScrollToPosition(numOfSnapsOnScreen - 1);
+		gridView.smoothScrollToPosition(numOfSnapsOnScreen - 1);
 		
 		Intent i = new Intent(this, ViewVideosActivity.class);
 		i.putExtra("username", getIntent().getStringExtra("username"));
