@@ -47,6 +47,8 @@ public class FriendsList extends ListActivity {
 		inputSearch = (EditText) findViewById(R.id.inputSearch);
 
 		friendsUserNames = SnapData.myFriendsNames;
+		if(friendsUserNames==null)
+			finish();
 		organizedFriendsUserNames = new String[friendsUserNames.size()];
 		int i = 0;
 		for (String fr : friendsUserNames) {
