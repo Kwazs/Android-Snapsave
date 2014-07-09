@@ -13,5 +13,6 @@
     <string name="title_activity_saved_people">SavedPeopleActivity</string>
     <string name="title_activity_upload_snap">UploadSnapActivity</string>
     <string name="title_activity_upload_video">UploadVideoActivity</string>
+    <string name="title_activity_view_videos">ViewVideosActivity</string>
 
 </resources>

@@ -55,7 +55,7 @@
         </activity>
         <activity
             android:name="com.kidgeniusdesigns.snapapp.FeedActivity"
-            android:label="@string/title_activity_feed">
+            android:label="@string/title_activity_feed" >
         </activity>
         <activity
             android:name="com.kidgeniusdesigns.snapapp.SavedPeopleActivity"
@@ -81,6 +81,10 @@
         <activity
             android:name="com.kidgeniusdesigns.snapapp.UploadVideoActivity"
             android:label="@string/title_activity_upload_video" >
+        </activity>
+        <activity
+            android:name="com.kidgeniusdesigns.snapapp.ViewVideosActivity"
+            android:label="@string/title_activity_view_videos" >
         </activity>
     </application>
 

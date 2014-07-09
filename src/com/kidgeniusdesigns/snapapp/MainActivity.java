@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 		getNameAndPw();
 		if(getIntent().getStringExtra("wrong")!=null)
 			Toast.makeText(this, getIntent().getStringExtra("wrong"), Toast.LENGTH_LONG).show();
-		
+
 	}
 	@Override
     protected void onStart() {

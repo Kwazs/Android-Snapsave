@@ -149,6 +149,8 @@ private class UploadSnap extends AsyncTask<String, Void, String> {
 	protected void onProgressUpdate(Void... values) {
 	}
 }
-
+public void cancelVid(View v){
+	finish();
+}
 
 }
