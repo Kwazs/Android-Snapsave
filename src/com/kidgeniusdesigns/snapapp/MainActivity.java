@@ -14,13 +14,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.kidgeniusdesigns.snapapp.helpers.MyApplication;
 
 public class MainActivity extends Activity {
-	private InterstitialAd interstitial;
+
 	EditText username, password;
 	static String usernameForLater;
 	@Override
@@ -37,16 +35,6 @@ public class MainActivity extends Activity {
 		getNameAndPw();
 		if(getIntent().getStringExtra("wrong")!=null)
 			Toast.makeText(this, getIntent().getStringExtra("wrong"), Toast.LENGTH_LONG).show();
-		
-		
-		// Create the interstitial.
-		interstitial = new InterstitialAd(this);
-		interstitial.setAdUnitId("ca-app-pub-4742368221536941/6949454117");
-		// Create ad request.
-		AdRequest adRequest = new AdRequest.Builder().build();
-
-		// Begin loading your interstitial.
-		interstitial.loadAd(adRequest);
 		
 
 	}
@@ -69,11 +57,8 @@ public class MainActivity extends Activity {
 	public void logIn(View v){
 		usernameForLater=username.getText().toString();
 		saveToFile(usernameForLater,password.getText().toString());
-		if(interstitial.isLoaded()){
-		displayInterstitial();
-		}else{
-			System.out.println("Didnt finish loading yet");
-		}
+
+
 		Intent i= new Intent(this, HomeActivity.class);
 		i.putExtra("username", usernameForLater);
 		i.putExtra("password", password.getText().toString());
@@ -125,11 +110,4 @@ public void getNameAndPw(){
 		System.out.println(e);
 	}
 }
-//Invoke displayInterstitial() when you are ready to display an
-	// interstitial.
-	public void displayInterstitial() {
-		if (interstitial.isLoaded()) {
-			interstitial.show();
-		}
-	}
 }
