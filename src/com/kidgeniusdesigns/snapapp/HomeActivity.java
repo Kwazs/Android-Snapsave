@@ -105,7 +105,7 @@ public void goToFeed(View v){
 						//add to my storys
 						if(s.isImage())
 							SnapData.myStorys.add(s);
-						else if(s.isVideo()){
+						else if(s.isVideo()&&s.getCaption().length()>1){
 							SnapData.videoStorys.add(s);
 						}
 					}
