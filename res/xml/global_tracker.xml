@@ -22,4 +22,5 @@
 <string name="com.kidgeniusDesigns.snapapp.UploadSnapActivity">Upload Snap</string>
 
 <string name="com.kidgeniusDesigns.snapapp.MainActivity">Main Screen</string>
+<string name="com.kidgeniusDesigns.snapapp.UploadVideoActivity">Upload VIdn</string>
 </resources>

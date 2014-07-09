@@ -7,12 +7,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,7 +24,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -49,12 +52,60 @@ public class UploadSnapActivity extends Activity {
 		picture=(ImageView)findViewById(R.id.uploadImageView);
 		captionEditText=(EditText)findViewById(R.id.captionEditText);
 		captionEditText.setClickable(false);
-		// To open up a gallery browser
-				Intent intent = new Intent();
-				intent.setType("image/*");
-				intent.setAction(Intent.ACTION_GET_CONTENT);
-				startActivityForResult(Intent.createChooser(intent, "Select Picture"),
-						1);
+		
+		ActionBar bar = getActionBar();
+		bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#517fa4")));
+		bar.setTitle("InstaSnap");
+		bar.setIcon(new ColorDrawable(getResources().getColor(
+				android.R.color.transparent)));
+		
+		
+		
+		
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				this);
+ 
+			// set title
+			alertDialogBuilder.setTitle("Upload");
+ 
+			// set dialog message
+			alertDialogBuilder
+				.setMessage("Photo or Video")
+				.setCancelable(false)
+				.setPositiveButton("Video",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, close
+						// current activity
+						Intent i=new Intent(getApplicationContext(), UploadVideoActivity.class);
+						i.putExtra("username", getIntent().getStringExtra("username"));
+				startActivity(i);
+				finish();
+					}
+				  })
+				.setNegativeButton("Photo",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, just close
+						// the dialog box and do nothing
+						
+						// To open up a gallery browser
+						Intent intent = new Intent();
+						intent.setType("image/*");
+						intent.setAction(Intent.ACTION_GET_CONTENT);
+						startActivityForResult(Intent.createChooser(intent, "Select Picture"),
+								1);
+						dialog.cancel();
+					}
+				});
+ 
+				// create alert dialog
+				AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+				try{
+				alertDialog.show();
+				}catch(Exception e){
+					
+				}
+		
 				
 				
 	}
@@ -236,6 +287,7 @@ public class UploadSnapActivity extends Activity {
 				tst.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 0);
 						
 						tst.show();
+						finish();
 			}else{
 				Toast tst=Toast.makeText(getApplicationContext(),
 						"Error occured please try again later", Toast.LENGTH_SHORT);
@@ -252,5 +304,11 @@ public class UploadSnapActivity extends Activity {
 		@Override
 		protected void onProgressUpdate(Void... values) {
 		}
+	}
+	
+	public void goToVideo(View v){
+		Intent i=new Intent(this, UploadVideoActivity.class);
+				i.putExtra("username", getIntent().getStringExtra("username"));
+		startActivity(i);
 	}
 }

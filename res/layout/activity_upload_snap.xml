@@ -40,7 +40,16 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/uploadImageView"
         android:layout_alignParentRight="true"
-        android:text="Preview"
+        android:text="Show\ncaption"
         android:onClick="preview" />
+
+    <Button
+        android:id="@+id/goToVideoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_alignParentRight="true"
+        android:text="Switch\nto\nVIDEO"
+        android:onClick="goToVideo" />
 
 </RelativeLayout>
