@@ -88,6 +88,7 @@ public void goToFeed(View v){
 							SnapData.authTokenSaved);
 					
 					SnapData.myStorys = new ArrayList<Story>();
+					SnapData.videoStorys = new ArrayList<Story>();
 					
 					for(Story s:Story
 							.filterDownloadable(notdownloadable)){
@@ -102,9 +103,13 @@ public void goToFeed(View v){
 						//add to my storys
 						if(s.isImage())
 							SnapData.myStorys.add(s);
+						else if(s.isVideo()){
+							SnapData.videoStorys.add(s);
+						}
 					}
 					
 					SnapData.byteList = new ArrayList<byte[]>();
+					SnapData.videoByteList = new ArrayList<byte[]>();
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

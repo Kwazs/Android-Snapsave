@@ -139,6 +139,7 @@ public class FeedActivity extends Activity implements OnScrollListener {
 
 	public void goToBottom(View v) {
 		gridView.smoothScrollToPosition(0);
+		
 	}
 
 	private class MyAdapter extends BaseAdapter {
@@ -320,11 +321,15 @@ public class FeedActivity extends Activity implements OnScrollListener {
 	}
 
 	public void goToDumbActivity(View v) {
-		Toast toast = Toast.makeText(getApplicationContext(),
-				"Scrolling to the bottom", Toast.LENGTH_LONG);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-		gridView.smoothScrollToPosition(numOfSnapsOnScreen - 1);
+//		Toast toast = Toast.makeText(getApplicationContext(),
+//				"Scrolling to the bottom", Toast.LENGTH_LONG);
+//		toast.setGravity(Gravity.CENTER, 0, 0);
+//		toast.show();
+//		gridView.smoothScrollToPosition(numOfSnapsOnScreen - 1);
+		
+		Intent i = new Intent(this, ViewVideosActivity.class);
+		i.putExtra("username", getIntent().getStringExtra("username"));
+		startActivity(i);
 	}
 
 	@Override

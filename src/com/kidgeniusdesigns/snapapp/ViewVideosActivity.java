@@ -1,12 +1,17 @@
 package com.kidgeniusdesigns.snapapp;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -15,47 +20,24 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.VideoView;
 
+import com.habosa.javasnap.Snapchat;
+import com.habosa.javasnap.Story;
+
 public class ViewVideosActivity extends Activity {
 	Uri[] vidUris;
+	int checkEverySnapIndex;
+	GridView vGrid;
+	VideoAdapter vAdapter;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_videos);
-
-		GridView vGrid=(GridView) findViewById(R.id.vGrid);
-        vGrid.setAdapter(new VideoAdapter(this));
-
-        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-
-        Log.d("EditGalleryView", "uri:"+uri);
-        String[] projection = {
-                MediaStore.Video.Media.DESCRIPTION,
-                MediaStore.Video.Media.DATA  
-    };
-
-        Cursor c = this.managedQuery(uri, projection, null, null,
-                MediaStore.Video.Media.DATE_ADDED);
-                         Log.d("EditGalleryView", "vids available:" +c.getCount());
-
-                         ArrayList<Uri> experimentVids = new ArrayList<Uri>();
-
-
-                             if (c.getCount() != 0) {
-                                 c.moveToFirst();
-                                 experimentVids.add(Uri.parse(c.getString(1)));
-                                 while (c.moveToNext()) {
-                                         experimentVids.add(Uri.parse(c.getString(1)));
-
-                                  }
-                      }
-                             Log.d("ClassName", "experimentVids.length:" +experimentVids.size());
-                                                  if (experimentVids.size() != 0) {
-                                                    vidUris = new Uri[experimentVids.size()];
-                                                      for (int i = 0; i < experimentVids.size(); i++) {
-                                                          vidUris[i] = experimentVids.get(i);
-                                                      }
-                                                      Log.d("EditGalleryView", "vidUris:"+vidUris.length);
-                                                  }
+		checkEverySnapIndex=0;
+		vGrid=(GridView) findViewById(R.id.vGrid);
+		vAdapter=new VideoAdapter(getApplicationContext());
+        vGrid.setAdapter(vAdapter);
+		LoadStories ls = new LoadStories();
+		ls.execute();
                                               }
 
 	
@@ -86,26 +68,33 @@ public class ViewVideosActivity extends Activity {
 
 	        public View getView(int position, View convertView, ViewGroup parent) {
 	            VideoView videoView;
+	            System.out.println("Showing");
+	            
 	            if (convertView == null) { // if it's not recycled, initialize some
 	                                        // attributes
 	            	
 	            	//saves byte[] to file and sets videoview!!
-//	            	FileOutputStream out = new FileOutputStream("sdcard path where you want to save video");
-//	            	out.write(bytes);
-//	            	out.close();
-//	            	videoView.setVideoPath(Òpath to saved videoÒ).
+	            	File tempVidFile=new File(getFilesDir().getAbsolutePath() + "/video.mp4");
+	            	try {
+	            	FileOutputStream out = new FileOutputStream(tempVidFile);
+	            	out.write(SnapData.videoByteList.get(position));
 	            	
-	            	
-	                videoView = new VideoView(mContext);
+						out.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	            	videoView = new VideoView(mContext);
 	                videoView.setFocusable(true);
-	                videoView.setVideoURI(vidUris[position]);
+	            	videoView.setVideoPath(tempVidFile.getPath());
+	            	
 	                videoView.setLayoutParams(new GridView.LayoutParams(160, 120));
 	                // videoView.setScaleType(VideoView.ScaleType.CENTER_CROP);
 	                videoView.setPadding(8, 8, 8, 8);
-	                //videoView.start();
+	                videoView.pause();
 	            } else {
 	                videoView = (VideoView) convertView;
 	                videoView.start();
+	                videoView.pause();
 	            }
 
 	            // imageView.setImageResource(mThumbIds[position]);
@@ -114,4 +103,73 @@ public class ViewVideosActivity extends Activity {
 
 
 	    }   
+	 
+	 private class LoadStories extends AsyncTask<Integer, Integer, String> {
+			@Override
+			protected String doInBackground(Integer... index) {
+				//finishedLoading = false;
+
+				int numLoading = 0;
+				try {
+					while (numLoading < 8) {
+
+						Story s = SnapData.videoStorys.get(checkEverySnapIndex);
+
+						checkEverySnapIndex++;
+						if (s != null) {
+							if (!SnapData.videoByteList.contains(Snapchat.getStory(s,
+									getIntent().getStringExtra("username"), SnapData.authTokenSaved))) {
+
+								byte[] storyBytes = Snapchat.getStory(s, getIntent().getStringExtra("username"),
+										SnapData.authTokenSaved);
+								SnapData.videoByteList.add(storyBytes);
+System.out.println("Adding");
+								numLoading++;
+							}
+						}
+
+					}
+				} catch (Exception e) {
+					//finishedLoading = true;
+					System.out.println("YAY FINISHED LOADING EM ALL");
+					return null;
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(String result) {
+//doneSystem.out.println("Adding");
+				System.out.println("Done");
+				
+		        
+					vAdapter.notifyDataSetChanged();
+					vGrid.invalidateViews();
+				
+			}
+		}
+
+	 private class SavePhotoTask extends AsyncTask<byte[], String, String> {
+		    @Override
+		    protected String doInBackground(byte[]... jpeg) {
+		      File photo=new File(Environment.getExternalStorageDirectory(), "video.mp4");
+
+		      if (photo.exists()) {
+		            photo.delete();
+		      }
+
+		      try {
+		        FileOutputStream fos=new FileOutputStream(photo.getPath());
+
+		        fos.write(jpeg[0]);
+		        fos.close();
+		      }
+		      catch (java.io.IOException e) {
+		        Log.e("PictureDemo", "Exception in photoCallback", e);
+		      }
+
+		      return(null);
+		    }
+		}
+	 
 	}
