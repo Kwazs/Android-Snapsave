@@ -1,5 +1,6 @@
 package com.kidgeniusdesigns.snapapp;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -19,7 +22,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,11 +30,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.habosa.javasnap.Snapchat;
 import com.habosa.javasnap.Story;
@@ -44,17 +43,17 @@ public class ViewVideosActivity extends Activity {
 	GridView vGrid;
 	VideoAdapter vAdapter;
 	ArrayAdapter<String> adapter;
-
+	final int BUFFER_SIZE = 4096;
 	ArrayList<String> vidSenders;
 	ListView lv;
 
-	
+	int vidCounter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_videos);
-
+vidCounter=0;
 		((MyApplication) getApplication())
 				.getTracker(MyApplication.TrackerName.APP_TRACKER);
 		ActionBar bar = getActionBar();
@@ -78,30 +77,16 @@ public class ViewVideosActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				String o = lv.getItemAtPosition(position).toString();
-
-				File tempVidFile = new File(getFilesDir() + "/video");
 				try {
-					FileOutputStream out = new FileOutputStream(tempVidFile);
-					// change to position!!!! only doing 1st one now
-					out.write(SnapData.videoByteList.get(0));
 
+				File tempVidFile = new File(getFilesDir() + "/video.zip");
+					FileOutputStream out = new FileOutputStream(tempVidFile);
+					out.write(SnapData.videoByteList.get(position));
 					out.close();
 
-					// addToGallery(tempVidFile,SnapData.videoByteList.get(position));
+					File destinationFile= new File(getFilesDir() + "/videos");
 
-					// Intent intent = new Intent(Intent.ACTION_VIEW,
-					// Uri.parse(tempVidFile.getAbsolutePath()));
-					// intent.setDataAndType(Uri.parse(tempVidFile.getPath()),
-					// "video/*");
-					// startActivity(intent);
-
-					Toast toast = Toast.makeText(ViewVideosActivity.this,
-							"Downloading videos will be available July 14th",
-							Toast.LENGTH_LONG);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
-					toast.show();
+//unzip(tempVidFile.getAbsolutePath(),destinationFile.getAbsolutePath());
 					
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -186,7 +171,7 @@ public class ViewVideosActivity extends Activity {
 
 			int numLoading = 0;
 			try {
-				while (numLoading < 1) {
+				while (numLoading < 5) {
 
 					Story s = SnapData.videoStorys.get(checkEverySnapIndex);
 
@@ -225,34 +210,31 @@ public class ViewVideosActivity extends Activity {
 		}
 	}
 
-	public void addToGallery(File f, byte[] buffer) {
-		// Save the name and description of a video in a ContentValues map.
-		ContentValues values = new ContentValues(2);
-		values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-		values.put(MediaStore.Video.Media.DATA, f.getAbsolutePath());
+	public void addToGallery(File f) {
+		// Save the name and description of a video in a ContentValues map.  
+        ContentValues values = new ContentValues(2);
+        values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+         values.put(MediaStore.Video.Media.DATA, f.getAbsolutePath()); 
 
-		// Add a new record (identified by uri) without the video, but with the
-		// values just set.
-		Uri uri = getContentResolver().insert(
-				MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+        // Add a new record (identified by uri) without the video, but with the values just set.
+        Uri uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
-		// Now get a handle to the file for that record, and save the data into
-		// it.
-		try {
-			InputStream is = new FileInputStream(f);
-			OutputStream os = getContentResolver().openOutputStream(uri);
-			int len;
-			while ((len = is.read(buffer)) != -1) {
-				os.write(buffer, 0, len);
-			}
-			os.flush();
-			is.close();
-			os.close();
-		} catch (Exception e) {
-			// Log.e(TAG, "exception while writing video: ", e);
-		}
+        // Now get a handle to the file for that record, and save the data into it.
+        try {
+            InputStream is = new FileInputStream(f);
+            OutputStream os = getContentResolver().openOutputStream(uri);
+            byte[] buffer = new byte[4096]; // tweaking this number may increase performance
+            int len;
+            while ((len = is.read(buffer)) != -1){
+                os.write(buffer, 0, len);
+            }
+            os.flush();
+            is.close();
+            os.close();
+        } catch (Exception e) {
+        } 
 
-		sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
 	}
 
 	@Override
@@ -286,4 +268,46 @@ public class ViewVideosActivity extends Activity {
 		finish();
 	}
 	
+	public void unzip(String zipFilePath, String destDirectory) throws IOException {
+        File destDir = new File(destDirectory);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+        ZipEntry entry = zipIn.getNextEntry();
+        // iterates over entries in the zip file
+        while (entry != null) {
+            String filePath = destDirectory + File.separator + vidCounter+".mp4";
+            vidCounter++;
+            if (!entry.isDirectory()) {
+                // if the entry is a file, extracts it
+                extractFile(zipIn, filePath);
+                
+            } else {
+                // if the entry is a directory, make the directory
+                File dir = new File(filePath);
+                dir.mkdir();
+            }
+            zipIn.closeEntry();
+            entry = zipIn.getNextEntry();
+        }
+        zipIn.close();
+    }
+	private void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
+        byte[] bytesIn = new byte[BUFFER_SIZE];
+        int read = 0;
+        while ((read = zipIn.read(bytesIn)) != -1) {
+            bos.write(bytesIn, 0, read);
+        }
+        bos.close();
+    
+        System.out.println(filePath);
+        //addToGallery(new File(filePath));
+        if((vidCounter%2)==1){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(filePath));
+        intent.setDataAndType(Uri.parse(filePath), "video/mp4");
+        startActivity(intent);
+        }
+    }
 }
