@@ -88,6 +88,14 @@ public class ViewVideosActivity extends Activity {
 	            VideoView videoView;
 	            if (convertView == null) { // if it's not recycled, initialize some
 	                                        // attributes
+	            	
+	            	//saves byte[] to file and sets videoview!!
+//	            	FileOutputStream out = new FileOutputStream("sdcard path where you want to save video");
+//	            	out.write(bytes);
+//	            	out.close();
+//	            	videoView.setVideoPath(“path to saved video“).
+	            	
+	            	
 	                videoView = new VideoView(mContext);
 	                videoView.setFocusable(true);
 	                videoView.setVideoURI(vidUris[position]);
