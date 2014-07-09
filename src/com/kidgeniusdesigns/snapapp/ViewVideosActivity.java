@@ -93,7 +93,7 @@ public class ViewVideosActivity extends Activity {
 					File destinationFile = new File(getFilesDir() + "/videos");
 					unzip(tempVidFile.getAbsolutePath(),
 							destinationFile.getAbsolutePath());
-
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 					Toast.makeText(getApplicationContext(),
@@ -335,5 +335,10 @@ public class ViewVideosActivity extends Activity {
 		addToGallery(new File(filePath));
 		Toast.makeText(getApplicationContext(), "Saved to Gallery. folder 0",
 				Toast.LENGTH_LONG).show();
+	}
+	
+	public void goToGallery(View v){
+		Intent galleryIntent = new Intent(Intent.ACTION_VIEW, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        startActivity(galleryIntent);
 	}
 }

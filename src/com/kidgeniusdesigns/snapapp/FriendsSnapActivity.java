@@ -146,7 +146,7 @@ public class FriendsSnapActivity extends Activity {
 		        int width = dimension.widthPixels;
 				
 				// the object of image file
-				Bitmap bm2 = Bitmap.createScaledBitmap(bm, width/2, 2*width/3, true);// convert
+				Bitmap bm2 = Bitmap.createScaledBitmap(bm, width/2, 3*width/4, true);// convert
 																			// decoded
 																			// bitmap
 																			// into

@@ -57,20 +57,21 @@
         android:background="@drawable/homeathomebutton"
         android:onClick="back" />
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/progressBar1"
-        android:text="Click Snaps to Download (only snaps with captions work right now))" />
-
     <ProgressBar
         android:id="@+id/progressBar1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/progressBar1"
+        android:text="Go To Gallery"
+        android:onClick="goToGallery" />
 
 </RelativeLayout>

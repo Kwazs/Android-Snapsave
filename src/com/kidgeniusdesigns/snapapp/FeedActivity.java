@@ -203,7 +203,7 @@ public class FeedActivity extends Activity implements OnScrollListener {
 
 				// the object of image file
 				Bitmap bm2 = Bitmap.createScaledBitmap(bm, width / 2,
-						2 * width / 3, true);// convert
+						3 * width / 4, true);// convert
 				// decoded
 				// bitmap
 				// into
