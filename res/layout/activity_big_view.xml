@@ -27,7 +27,7 @@
         android:layout_height="58dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/homeathomebutton"
+        android:background="@drawable/selfbutton"
         android:onClick="back" />
 
     <Button
@@ -36,7 +36,7 @@
         android:layout_height="58dp"
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/button5"
-        android:background="@drawable/homeathomebutton"
+        android:background="@drawable/commentbutton"
         android:onClick="back" />
 
     <Button
